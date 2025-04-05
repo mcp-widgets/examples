@@ -266,7 +266,6 @@ type result = {
   }[];
 };
 
-
 const RenderToolWidget = ({ result }: { result: result }) => {
   console.log('weather result', result);
 
@@ -292,9 +291,47 @@ const RenderToolWidget = ({ result }: { result: result }) => {
       const htmlContent = decodeURIComponent(
         resource.uri.replace('data:text/html,', ''),
       );
-      const sanitizedHtml = DOMPurify.sanitize(htmlContent);
+      
+      // Configure DOMPurify to keep all classes and styles
+      const sanitizeConfig = {
+        ADD_ATTR: ['class', 'style'],
+        ADD_TAGS: ['style'],
+        KEEP_CONTENT: true,
+        USE_PROFILES: { html: true },
+      };
+      
+      // Create a container element to isolate the weather widget styles
+      const containerId = `weather-widget-${Math.random().toString(36).substring(2, 9)}`;
+      
+      // Extract styles from the HTML and make them scoped to our container
+      let styleContent = '';
+      const styleMatch = htmlContent.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+      if (styleMatch?.[1]) {
+        styleContent = styleMatch[1];
+      }
+      
+      // Extract the body content
+      let bodyContent = '';
+      const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+      if (bodyMatch?.[1]) {
+        bodyContent = bodyMatch[1];
+      } else {
+        // If no body tags, assume the whole HTML is the content we want
+        // but remove any style tags first
+        bodyContent = htmlContent.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
+      }
 
-      return <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
+      const sanitizedHtml = DOMPurify.sanitize(bodyContent, sanitizeConfig);
+
+      return (
+        <div 
+          id={containerId}
+          className="weather-widget-container w-full overflow-hidden rounded-xl relative"
+        >
+          <style dangerouslySetInnerHTML={{ __html: styleContent }} />
+          <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+        </div>
+      );
     } catch (e) {
       console.error('Error parsing HTML content', e);
     }
