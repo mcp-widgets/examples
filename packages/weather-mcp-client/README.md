@@ -1,0 +1,1 @@
+Minimal MCP client for demo purposes. Inspired by the [Anthropic Node example](https://modelcontextprotocol.io/quickstart/client)
