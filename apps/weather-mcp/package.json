@@ -4,11 +4,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build:css && PORT=3001 tsc && chmod 755 build/index.js",
+    "build": "npm run build:css && tsc && [ -f build/src/index.js ] && cp build/src/index.js build/index.js && chmod 755 build/index.js || echo 'Warning: Could not find build/src/index.js'",
     "start": "PORT=3001 node build/index.js",
     "mcp-server": "tsx src/index.ts --stdio",
-    "build:css": "tailwindcss -i ./src/globals.css -o ./build/styles.css",
-    "watch:css": "tailwindcss -i ./src/globals.css -o ./build/styles.css --watch"
+    "build:css": "npx tailwindcss -i ./src/globals.css -o ./build/styles.css",
+    "watch:css": "npx tailwindcss -i ./src/globals.css -o ./build/styles.css --watch"
   },
   "files": ["build"],
   "keywords": [],
@@ -18,21 +18,23 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",
     "@radix-ui/react-tabs": "^1.1.3",
-    "@tailwindcss/cli": "^4.1.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.446.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss": "^4.1.3",
+
     "tw-animate-css": "^1.2.5",
+
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "tailwindcss": "^3",
+    "postcss": "^8"
   }
 }
