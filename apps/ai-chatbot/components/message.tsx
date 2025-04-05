@@ -267,8 +267,6 @@ type result = {
 };
 
 const RenderToolWidget = ({ result }: { result: result }) => {
-  console.log('weather result', result);
-
   // Extract the resource from potentially nested structure
   let resource: any;
 
@@ -282,8 +280,6 @@ const RenderToolWidget = ({ result }: { result: result }) => {
     // Assume result is the resource itself
     resource = result;
   }
-
-  console.log('extracted resource', resource);
 
   // For data URI containing HTML
   if (resource?.uri?.startsWith('data:text/html')) {
@@ -300,8 +296,8 @@ const RenderToolWidget = ({ result }: { result: result }) => {
         USE_PROFILES: { html: true },
       };
       
-      // Create a container element to isolate the weather widget styles
-      const containerId = `weather-widget-${Math.random().toString(36).substring(2, 9)}`;
+      // Create a container element to isolate the widget styles
+      const containerId = `mcp-widget-${Math.random().toString(36).substring(2, 9)}`;
       
       // Extract styles from the HTML and make them scoped to our container
       let styleContent = '';
@@ -326,7 +322,8 @@ const RenderToolWidget = ({ result }: { result: result }) => {
       return (
         <div 
           id={containerId}
-          className="weather-widget-container w-full overflow-hidden rounded-xl relative"
+          className="mcp-widget-container w-full overflow-hidden rounded-xl relative"
+          data-has-html-content="true"
         >
           <style dangerouslySetInnerHTML={{ __html: styleContent }} />
           <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
@@ -337,9 +334,9 @@ const RenderToolWidget = ({ result }: { result: result }) => {
     }
   }
 
-  // Fallback to text
+  // Only show text content if we don't have HTML
   return (
-    <div className="weather-text p-4 border rounded-lg bg-card whitespace-pre-wrap">
+    <div className="mcp-text p-4 border rounded-lg bg-card whitespace-pre-wrap">
       {resource?.text || JSON.stringify(result, null, 2)}
     </div>
   );
