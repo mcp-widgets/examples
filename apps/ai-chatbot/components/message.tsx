@@ -294,11 +294,7 @@ const RenderToolWidget = ({ result }: { result: result }) => {
       );
       const sanitizedHtml = DOMPurify.sanitize(htmlContent);
 
-      return (
-        <div className="weather-forecast p-4 border rounded-lg bg-card">
-          <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
-        </div>
-      );
+      return <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />;
     } catch (e) {
       console.error('Error parsing HTML content', e);
     }
