@@ -208,6 +208,35 @@ body {
     color: #111827;
     font-weight: 500;
   }
+
+  /* Product List Styles */
+  .product-list-container {
+    padding: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .product-list-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 3rem;
+    justify-items: center;
+    row-gap: 4rem;
+  }
+  
+  @media (max-width: 768px) {
+    .product-grid {
+      row-gap: 3rem;
+    }
+  }
 }
 
 @layer base {
