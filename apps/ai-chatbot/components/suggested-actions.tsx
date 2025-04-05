@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { memo } from 'react';
 import { UseChatHelpers } from '@ai-sdk/react';
+import { useTools } from '@/hooks/use-tools';
 
 interface SuggestedActionsProps {
   chatId: string;
@@ -16,23 +17,29 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
       title: 'What are the advantages',
       label: 'of using Next.js?',
       action: 'What are the advantages of using Next.js?',
+      tool: 'ecommerce',
     },
     {
       title: 'Write code to',
       label: `demonstrate djikstra's algorithm`,
       action: `Write code to demonstrate djikstra's algorithm`,
+      tool: 'ecommerce',
     },
     {
       title: 'Help me write an essay',
       label: `about silicon valley`,
       action: `Help me write an essay about silicon valley`,
+      tool: 'ecommerce',
     },
     {
       title: 'What is the weather',
       label: 'in San Francisco?',
       action: 'What is the weather in San Francisco?',
+      tool: 'weather',
     },
   ];
+
+  const { selectedTools, setSelectedTools } = useTools();
 
   return (
     <div
@@ -51,7 +58,18 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
           <Button
             variant="ghost"
             onClick={async () => {
-              window.history.replaceState({}, '', `/chat/${chatId}`);
+              // window.history.replaceState({}, '', `/chat/${chatId}`);
+              if (suggestedAction.tool === 'ecommerce') {
+                if (!selectedTools.includes('ecommerce')) {
+                  // add ecommerce tool to the selected tools
+                  setSelectedTools([...selectedTools, 'ecommerce']);
+                }
+              } else if (suggestedAction.tool === 'weather') {
+                if (!selectedTools.includes('weather')) {
+                  // add weather tool to the selected tools
+                  setSelectedTools([...selectedTools, 'weather']);
+                }
+              }
 
               append({
                 role: 'user',
