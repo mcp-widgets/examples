@@ -39,7 +39,7 @@ const getWeatherClient = async () => {
   const weatherClient = await createMCPClient({
     transport: new StdioClientTransport({
       command: 'pnpm',
-      args: ['-F', '@repo/mcp-server', 'run', 'mcp-server'],
+      args: ['-F', '@repo/weather-mcp', 'run', 'mcp-server'],
     }),
   });
 

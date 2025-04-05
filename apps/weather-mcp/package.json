@@ -1,5 +1,5 @@
 {
-  "name": "@repo/mcp-server",
+  "name": "@repo/weather-mcp",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,9 +10,7 @@
     "build:css": "tailwindcss -i ./src/globals.css -o ./build/styles.css",
     "watch:css": "tailwindcss -i ./src/globals.css -o ./build/styles.css --watch"
   },
-  "files": [
-    "build"
-  ],
+  "files": ["build"],
   "keywords": [],
   "author": "Nicklas Scharpff <hi@n1cklas.com>",
   "license": "MIT",
