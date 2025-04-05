@@ -1,21 +1,25 @@
+import { CloudIcon, ShoppingCartIcon, LucideIcon } from 'lucide-react';
 export const DEFAULT_TOOLS: string[] = [];
 
 interface Tool {
   id: string;
   name: string;
   description: string;
+  icon: LucideIcon;
 }
 
 export const tools: Array<Tool> = [
   {
     id: 'weather',
-    name: 'Weather',
-    description: 'Get the weather in a specific location',
-  },
-  {
-    id: 'forecast',
+    icon: CloudIcon,
     name: 'Weather Forecast',
     description: 'Get the weather forecast for a specific location',
+  },
+  {
+    id: 'ecommerce',
+    icon: ShoppingCartIcon,
+    name: 'Ecommerce',
+    description: 'Order products from an ecommerce store',
   },
 ];
 

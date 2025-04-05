@@ -83,7 +83,10 @@ export function ToolSelector({
                 className="gap-4 group/item flex flex-row justify-between items-center w-full"
               >
                 <div className="flex flex-col gap-1 items-start">
-                  <div>{name}</div>
+                  <div className="flex flex-row gap-2 items-center">
+                    <tool.icon />
+                    <div>{name}</div>
+                  </div>
                   <div className="text-xs text-muted-foreground">
                     {description}
                   </div>
