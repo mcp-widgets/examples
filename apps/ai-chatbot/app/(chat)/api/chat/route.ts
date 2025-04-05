@@ -116,12 +116,23 @@ export async function POST(request: Request) {
           experimental_activeTools:
             selectedChatModel === 'chat-model-reasoning'
               ? []
-              : ['get-alerts', 'get-forecast'],
+              : [
+                  'get-alerts',
+                  'get-forecast',
+                  'get-product',
+                  'list-products',
+                  'search-products',
+                  'get-recommendations',
+                ],
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
           tools: {
             'get-alerts': tools[0].toolObject['get-alerts'],
             'get-forecast': tools[0].toolObject['get-forecast'],
+            'get-product': tools[1].toolObject['get-product'],
+            'list-products': tools[1].toolObject['list-products'],
+            'search-products': tools[1].toolObject['search-products'],
+            'get-recommendations': tools[1].toolObject['get-recommendations'],
           },
           onFinish: async ({ response }) => {
             if (session?.user?.id) {

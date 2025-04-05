@@ -20,9 +20,9 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
       tool: 'ecommerce',
     },
     {
-      title: 'Write code to',
-      label: `demonstrate djikstra's algorithm`,
-      action: `Write code to demonstrate djikstra's algorithm`,
+      title: 'Find a present for my friend',
+      label: `who loves listening to music`,
+      action: `Find a present for my friend who loves listening to music`,
       tool: 'ecommerce',
     },
     {
