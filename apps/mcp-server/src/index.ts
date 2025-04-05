@@ -1,6 +1,11 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
+import {
+  renderWeatherForecast,
+  createPropsJSON,
+  createFullHTML,
+} from './utils/renderToString';
 
 const NWS_API_BASE = 'https://api.weather.gov';
 const USER_AGENT = 'weather-app/1.0';
@@ -195,7 +200,7 @@ server.tool(
       };
     }
 
-    // Format forecast periods
+    // Format forecast periods for plain text fallback
     const formattedForecast = periods.map((period: ForecastPeriod) =>
       [
         `${period.name || 'Unknown'}:`,
@@ -206,22 +211,19 @@ server.tool(
       ].join('\n'),
     );
 
-    const formattedForecastHtml = periods.map(
-      (period: ForecastPeriod) =>
-        `<div class="forecast-period">
-        <h3>${period.name || 'Unknown'}</h3>
-        <p><strong>Temperature:</strong> ${period.temperature || 'Unknown'}°${period.temperatureUnit || 'F'}</p>
-        <p><strong>Wind:</strong> ${period.windSpeed || 'Unknown'} ${period.windDirection || ''}</p>
-        <p>${period.shortForecast || 'No forecast available'}</p>
-        <hr/>
-      </div>`,
-    );
-    const forecastHtml = `
-    <div class="weather-forecast">
-      <h2>Forecast for ${latitude}, ${longitude}</h2>
-      ${formattedForecastHtml.join('')}
-    </div>
-  `;
+    // Generate the server-side rendered React component
+    const htmlContent = renderWeatherForecast({
+      latitude,
+      longitude,
+      periods,
+    });
+
+    // Generate the props JSON for hydration (optional)
+    const propsJSON = createPropsJSON({
+      latitude,
+      longitude,
+      periods,
+    });
 
     const forecastText = `Forecast for ${latitude}, ${longitude}:\n\n${formattedForecast.join('\n')}`;
 
@@ -231,7 +233,13 @@ server.tool(
           type: 'resource',
           resource: {
             text: forecastText,
-            uri: `data:text/html,${encodeURIComponent(forecastHtml)}`,
+            uri: `data:text/html,${encodeURIComponent(
+              createFullHTML({
+                latitude,
+                longitude,
+                periods,
+              }),
+            )}`,
             mimeType: 'text/html',
           },
         },
