@@ -52,7 +52,7 @@ export function Chat({
   });
 
   const { data: votes } = useSWR<Array<Vote>>(
-    messages.length >= 2 ? `/api/vote?chatId=${id}` : null,
+    !id.includes('temp') ? `/api/vote?chatId=${id}` : null,
     fetcher,
   );
 
