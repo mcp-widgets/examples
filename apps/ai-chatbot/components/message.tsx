@@ -5,7 +5,7 @@ import cx from 'classnames';
 import { AnimatePresence, motion } from 'framer-motion';
 import { memo, useState } from 'react';
 import type { Vote } from '@/lib/db/schema';
-import { DocumentToolCall, DocumentToolResult } from './document';
+import { DocumentToolCall } from './document';
 import { PencilEditIcon, SparklesIcon } from './icons';
 import { Markdown } from './markdown';
 import { MessageActions } from './message-actions';
@@ -19,6 +19,7 @@ import { MessageEditor } from './message-editor';
 import { DocumentPreview } from './document-preview';
 import { MessageReasoning } from './message-reasoning';
 import { UseChatHelpers } from '@ai-sdk/react';
+import DOMPurify from 'dompurify';
 
 const PurePreviewMessage = ({
   chatId,
@@ -186,28 +187,7 @@ const PurePreviewMessage = ({
 
                   return (
                     <div key={toolCallId}>
-                      {toolName === 'getWeather' ? (
-                        <Weather weatherAtLocation={result} />
-                      ) : toolName === 'createDocument' ? (
-                        <DocumentPreview
-                          isReadonly={isReadonly}
-                          result={result}
-                        />
-                      ) : toolName === 'updateDocument' ? (
-                        <DocumentToolResult
-                          type="update"
-                          result={result}
-                          isReadonly={isReadonly}
-                        />
-                      ) : toolName === 'requestSuggestions' ? (
-                        <DocumentToolResult
-                          type="request-suggestions"
-                          result={result}
-                          isReadonly={isReadonly}
-                        />
-                      ) : (
-                        <pre>{JSON.stringify(result, null, 2)}</pre>
-                      )}
+                      <RenderToolWidget result={result} />
                     </div>
                   );
                 }
@@ -274,3 +254,60 @@ export const ThinkingMessage = () => {
     </motion.div>
   );
 };
+
+type result = {
+  content: {
+    type: string;
+    resource: {
+      text: string;
+      uri: string;
+      mimeType: string;
+    };
+  }[];
+};
+
+
+const RenderToolWidget = ({ result }: { result: result }) => {
+  console.log('weather result', result);
+
+  // Extract the resource from potentially nested structure
+  let resource: any;
+
+  if (result?.content && Array.isArray(result.content)) {
+    // Handle case where result has a content array (direct MCP response)
+    const resourceItem = result.content.find(
+      (item: any) => item.type === 'resource',
+    );
+    resource = resourceItem?.resource;
+  } else {
+    // Assume result is the resource itself
+    resource = result;
+  }
+
+  console.log('extracted resource', resource);
+
+  // For data URI containing HTML
+  if (resource?.uri?.startsWith('data:text/html')) {
+    try {
+      const htmlContent = decodeURIComponent(
+        resource.uri.replace('data:text/html,', ''),
+      );
+      const sanitizedHtml = DOMPurify.sanitize(htmlContent);
+
+      return (
+        <div className="weather-forecast p-4 border rounded-lg bg-card">
+          <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
+        </div>
+      );
+    } catch (e) {
+      console.error('Error parsing HTML content', e);
+    }
+  }
+
+  // Fallback to text
+  return (
+    <div className="weather-text p-4 border rounded-lg bg-card whitespace-pre-wrap">
+      {resource?.text || JSON.stringify(result, null, 2)}
+    </div>
+  );
+}
