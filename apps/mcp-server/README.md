@@ -1,0 +1,1 @@
+Minimal MCP server for demo purposes. Inspired by the [Anthropic Node example](https://modelcontextprotocol.io/quickstart/server)
