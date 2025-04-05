@@ -206,13 +206,34 @@ server.tool(
       ].join('\n'),
     );
 
+    const formattedForecastHtml = periods.map(
+      (period: ForecastPeriod) =>
+        `<div class="forecast-period">
+        <h3>${period.name || 'Unknown'}</h3>
+        <p><strong>Temperature:</strong> ${period.temperature || 'Unknown'}°${period.temperatureUnit || 'F'}</p>
+        <p><strong>Wind:</strong> ${period.windSpeed || 'Unknown'} ${period.windDirection || ''}</p>
+        <p>${period.shortForecast || 'No forecast available'}</p>
+        <hr/>
+      </div>`,
+    );
+    const forecastHtml = `
+    <div class="weather-forecast">
+      <h2>Forecast for ${latitude}, ${longitude}</h2>
+      ${formattedForecastHtml.join('')}
+    </div>
+  `;
+
     const forecastText = `Forecast for ${latitude}, ${longitude}:\n\n${formattedForecast.join('\n')}`;
 
     return {
       content: [
         {
-          type: 'text',
-          text: forecastText,
+          type: 'resource',
+          resource: {
+            text: forecastText,
+            uri: `data:text/html,${encodeURIComponent(forecastHtml)}`,
+            mimeType: 'text/html',
+          },
         },
       ],
     };
