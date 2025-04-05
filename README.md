@@ -1,6 +1,16 @@
 # AI-Powered Chat Application with MCP Widgets
 
-This project demonstrates a modern AI chat application that uses the Model Context Protocol (MCP) to enable rich, interactive responses beyond just text. The application integrates specialized MCP widgets to display structured data like weather forecasts and product listings.
+Introducing Model Context Protocol (MCP) Widgets, server side rendered UI snippets that are delivered as part of the MCP response to the client application. 
+
+This project demonstrates a modern AI chat application that uses the MCP to enable rich, interactive responses beyond just text. The application integrates specialized MCP widgets to display structured data like weather forecasts and product listings.
+
+### Request for comments
+Check out the [RFC repository](https://github.com/mcp-widgets/rfcs).
+
+## Example video
+Use the two example prompts to trigger the ecommerce or weather MCP and receive UI widgets.
+https://github.com/user-attachments/assets/9f958dfb-600c-4f48-a44b-ca80cd2d4c02
+
 
 ## System Architecture
 
