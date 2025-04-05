@@ -6,6 +6,7 @@ type ToolResponse = {
   client: unknown;
   name: string;
   toolObject: Record<string, Tool>;
+  systemMessage?: string;
 };
 
 const getWeatherClient = async () => {
@@ -58,11 +59,15 @@ const getWeatherClient = async () => {
 const getEcommerceClient = async () => {
   const toolSchemas = {
     'get-product': {
+      description:
+        'Get detailed information about a specific product. Returns HTML rendering of the product card that should be displayed to the user.',
       parameters: z.object({
         productId: z.string().describe('ID of the product to retrieve'),
       }),
     },
     'list-products': {
+      description:
+        'List products with optional filtering. Returns HTML rendering of products that should be displayed to the user.',
       parameters: z.object({
         category: z.string().optional().describe('Filter products by category'),
         minPrice: z
@@ -85,6 +90,8 @@ const getEcommerceClient = async () => {
       }),
     },
     'search-products': {
+      description:
+        'Search for products by query. Returns HTML rendering of matching products that should be displayed to the user.',
       parameters: z.object({
         query: z.string().describe('Search query for products'),
         limit: z
@@ -94,6 +101,8 @@ const getEcommerceClient = async () => {
       }),
     },
     'get-recommendations': {
+      description:
+        'Get product recommendations based on a product or category. Returns HTML rendering of recommended products that should be displayed to the user.',
       parameters: z.object({
         productId: z
           .string()
@@ -139,6 +148,7 @@ export const getClients = async (selectedTools: string[]) => {
       client,
       name,
       toolObject,
+      systemMessage: `The Weather MCP provides weather forecast tools that return HTML content you should show to the user.`,
     });
   }
   if (selectedTools.includes('ecommerce')) {
@@ -148,6 +158,12 @@ export const getClients = async (selectedTools: string[]) => {
       client,
       name,
       toolObject,
+      systemMessage: `
+The E-commerce MCP provides tools to browse and search products. All tools return HTML that you should display to the user.
+The store has several product categories including: Audio, Electronics, Home & Kitchen, Sports & Outdoors, Home & Office, and Home & Garden.
+The Audio category includes products like headphones, speakers, and vinyl record players for music lovers.
+When using these tools, focus on helping users find products based on their needs rather than describing what you see in the HTML output.
+`,
     });
   }
   return response;
