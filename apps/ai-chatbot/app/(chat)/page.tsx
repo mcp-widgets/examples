@@ -19,7 +19,6 @@ export default async function Page() {
           id={id}
           initialMessages={[]}
           selectedChatModel={DEFAULT_CHAT_MODEL}
-          selectedVisibilityType="private"
           isReadonly={false}
         />
         <DataStreamHandler id={id} />
@@ -34,7 +33,6 @@ export default async function Page() {
         id={id}
         initialMessages={[]}
         selectedChatModel={modelIdFromCookie.value}
-        selectedVisibilityType="private"
         isReadonly={false}
       />
       <DataStreamHandler id={id} />

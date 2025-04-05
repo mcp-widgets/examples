@@ -1,17 +1,18 @@
-"use client";
+'use client';
 
-import type { Attachment, UIMessage } from "ai";
-import { useChat } from "@ai-sdk/react";
-import { useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
-import { ChatHeader } from "@/components/chat-header";
-import type { Vote } from "@/lib/db/schema";
-import { fetcher, generateUUID } from "@/lib/utils";
-import { Artifact } from "./artifact";
-import { MultimodalInput } from "./multimodal-input";
-import { Messages } from "./messages";
-import { useArtifactSelector } from "@/hooks/use-artifact";
-import { toast } from "sonner";
+import type { Attachment, UIMessage } from 'ai';
+import { useChat } from '@ai-sdk/react';
+import { useState } from 'react';
+import useSWR, { useSWRConfig } from 'swr';
+import { ChatHeader } from '@/components/chat-header';
+import type { Vote } from '@/lib/db/schema';
+import { fetcher, generateUUID } from '@/lib/utils';
+import { Artifact } from './artifact';
+import { MultimodalInput } from './multimodal-input';
+import { Messages } from './messages';
+import { useArtifactSelector } from '@/hooks/use-artifact';
+import { useTools } from '@/hooks/use-tools';
+import { toast } from 'sonner';
 
 export function Chat({
   id,
@@ -25,6 +26,7 @@ export function Chat({
   isReadonly: boolean;
 }) {
   const { mutate } = useSWRConfig();
+  const { selectedTools } = useTools();
 
   const {
     messages,
@@ -38,20 +40,20 @@ export function Chat({
     reload,
   } = useChat({
     id,
-    body: { id, selectedChatModel: selectedChatModel },
+    body: { id, selectedChatModel, selectedTools },
     initialMessages,
     experimental_throttle: 100,
     sendExtraMessageFields: true,
     generateId: generateUUID,
     onFinish: () => {},
     onError: () => {
-      toast.error("An error occured, please try again!");
+      toast.error('An error occured, please try again!');
     },
   });
 
   const { data: votes } = useSWR<Array<Vote>>(
     messages.length >= 2 ? `/api/vote?chatId=${id}` : null,
-    fetcher
+    fetcher,
   );
 
   const [attachments, setAttachments] = useState<Array<Attachment>>([]);

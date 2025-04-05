@@ -31,13 +31,15 @@ export async function POST(request: Request) {
       id,
       messages,
       selectedChatModel,
+      selectedTools,
     }: {
       id: string;
       messages: Array<UIMessage>;
       selectedChatModel: string;
+      selectedTools: string[];
     } = await request.json();
 
-    //
+    console.log('selectedTools', selectedTools);
 
     const session = await auth();
 
