@@ -19,9 +19,9 @@ import {
   getTrailingMessageId,
 } from '@/lib/utils';
 import { generateTitleFromUserMessage } from '../../actions';
-import { getWeather } from '@/lib/ai/tools/get-weather';
 import { isProductionEnvironment } from '@/lib/constants';
 import { myProvider } from '@/lib/ai/providers';
+import { getClients } from '@/lib/ai/clients';
 
 export const maxDuration = 60;
 
@@ -93,6 +93,17 @@ export async function POST(request: Request) {
       });
     }
 
+    /*
+     * We need to import each tool from the tools registry and add them to the tools array
+     */
+
+    console.log('selectedTools', selectedTools);
+
+    console.log('getting clients');
+    const tools = await getClients(selectedTools);
+
+    console.log('tools', tools);
+
     return createDataStreamResponse({
       execute: (dataStream) => {
         const result = streamText({
@@ -100,12 +111,17 @@ export async function POST(request: Request) {
           system: systemPrompt({ selectedChatModel }),
           messages,
           maxSteps: 5,
+          // We are adding all tools selected by the user to the active tools array
+          // so that the MCP client can use them
           experimental_activeTools:
-            selectedChatModel === 'chat-model-reasoning' ? [] : ['getWeather'],
+            selectedChatModel === 'chat-model-reasoning'
+              ? []
+              : ['get-alerts', 'get-forecast'],
           experimental_transform: smoothStream({ chunking: 'word' }),
           experimental_generateMessageId: generateUUID,
           tools: {
-            getWeather,
+            'get-alerts': tools[0].toolObject['get-alerts'],
+            'get-forecast': tools[0].toolObject['get-forecast'],
           },
           onFinish: async ({ response }) => {
             if (session?.user?.id) {
