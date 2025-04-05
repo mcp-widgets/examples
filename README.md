@@ -1,84 +1,111 @@
-# Turborepo starter
+# AI-Powered Chat Application with MCP Widgets
 
-This Turborepo starter is maintained by the Turborepo core team.
+This project demonstrates a modern AI chat application that uses the Model Context Protocol (MCP) to enable rich, interactive responses beyond just text. The application integrates specialized MCP widgets to display structured data like weather forecasts and product listings.
 
-## Using this example
+## System Architecture
 
-Run the following command:
+The application consists of three main components:
 
-```sh
-npx create-turbo@latest
+1. **AI Chatbot** - The frontend chat interface where users interact with the AI
+2. **Weather MCP** - A specialized service providing weather forecasts with visual displays
+3. **E-commerce MCP** - A specialized service for product discovery and browsing
+
+## Features
+
+### Weather MCP
+- Fetch weather forecasts for any location using coordinates
+- Display beautiful visual weather widgets
+- Show temperature, forecast, wind conditions, and more
+- Responsive design that works on mobile and desktop
+
+### E-commerce MCP
+- Product search and filtering capabilities
+- Category browsing
+- Product recommendations
+- Interactive product cards with images, price, ratings, and availability
+- Responsive grid layout for multiple products
+
+## How It Works
+
+This application uses the Model Context Protocol (MCP) to bridge AI models with specialized UI components:
+
+1. User queries are sent to the AI model
+2. When weather or shopping-related queries are detected, the AI invokes the appropriate MCP
+3. The MCP processes the request and returns HTML/CSS rendering along with minimal text data
+4. The chat interface displays the rich visual content to the user
+
+## Configuration
+
+### Changing AI Models
+
+You can easily switch AI models by updating the `providers.ts` file:
+
+```typescript
+export const myProvider = isTestEnvironment
+  ? customProvider({
+      languageModels: {
+        'chat-model': chatModel,
+        'chat-model-reasoning': reasoningModel,
+        'title-model': titleModel,
+        'artifact-model': artifactModel,
+      },
+    })
+  : customProvider({
+      languageModels: {
+        'chat-model': openai('gpt-4o'),  // Change this to use a different model
+        'chat-model-reasoning': wrapLanguageModel({
+          model: openai('gpt-4o'),  // Change this to use a different model
+          middleware: extractReasoningMiddleware({ tagName: 'think' }),
+        }),
+        'title-model': openai('gpt-4o'),  // Change this to use a different model
+        'artifact-model': openai('gpt-4o'),  // Change this to use a different model
+      },
+    });
 ```
 
-## What's inside?
+### API Keys
 
-This Turborepo includes the following packages/apps:
+To use OpenAI models, you'll need to set up your API key:
 
-### Apps and Packages
+1. Create a `.env.local` file in the root directory
+2. Add your OpenAI API key:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   ```
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## Development
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Starting the Application
 
-### Utilities
+```bash
+# Install dependencies
+npm install
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+# Start the development server
+npm run dev
 ```
 
-### Develop
+### Building MCP Widgets
 
-To develop all apps and packages, run the following command:
+Each MCP must be built separately:
 
-```
-cd my-turborepo
-pnpm dev
-```
+```bash
+# Build the Weather MCP
+cd apps/weather-mcp
+npm run build
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+# Build the E-commerce MCP
+cd apps/ecommerce-mcp
+npm run build
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## Extending the System
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+You can add more MCPs by:
 
-```
-npx turbo link
-```
+1. Creating a new MCP service in the `apps/` directory
+2. Implementing the Model Context Protocol
+3. Adding visualization components
+4. Registering it with the MCP clients in `apps/ai-chatbo/lib/tools
 
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/docs/reference/command-line-reference)
+This architecture can be extended to support many types of interactive widgets beyond weather and e-commerce, such as calendars, maps, charts, and more.
