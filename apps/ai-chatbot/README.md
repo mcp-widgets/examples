@@ -1,0 +1,1 @@
+This is a fork of the [Vercel AI Chatbo](https://github.com/vercel/ai-chatbot) using the core features of the [AI SDK](https://sdk.vercel.ai/docs/introduction) to showcase how MCP widgets can be used.

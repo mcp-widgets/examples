@@ -1,0 +1,346 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Weather Widget Styles */
+  .weather-widget {
+    min-height: 100vh;
+    color: white;
+    overflow: hidden;
+  }
+  
+  /* Background gradients */
+  .bg-gradient-day { background: linear-gradient(to bottom, #3b82f6, #60a5fa, #2563eb); }
+  .bg-gradient-night { background: linear-gradient(to bottom, #111827, #1e3a8a, #111827); }
+  .bg-gradient-rain { background: linear-gradient(to bottom, #374151, #4b5563, #1f2937); }
+  .bg-gradient-snow { background: linear-gradient(to bottom, #9ca3af, #93c5fd, #6b7280); }
+  .bg-gradient-fog { background: linear-gradient(to bottom, #6b7280, #9ca3af, #4b5563); }
+  .bg-gradient-thunder { background: linear-gradient(to bottom, #1f2937, #374151, #111827); }
+  .bg-gradient-cloudy { background: linear-gradient(to bottom, #6b7280, #9ca3af, #4b5563); }
+  
+  /* Layout elements */
+  .weather-header {
+    padding-top: 3rem;
+    padding-bottom: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    text-align: center;
+  }
+  
+  .location-display {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  
+  .time-display {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    opacity: 0.9;
+  }
+  
+  .current-weather {
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+  
+  .temperature-display {
+    font-size: 4.5rem;
+    line-height: 1;
+    font-weight: 200;
+    margin-bottom: 0.5rem;
+  }
+  
+  .forecast-text {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .wind-info {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    opacity: 0.8;
+  }
+  
+  .wind-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .icon {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .icon-sun { color: #fcd34d; }
+  .icon-moon { color: #f3f4f6; }
+  .icon-rain { color: #93c5fd; }
+  .icon-snow { color: #e5e7eb; }
+  .icon-fog { color: #d1d5db; }
+  .icon-lightning { color: #fcd34d; }
+  .icon-drizzle { color: #bfdbfe; }
+  .icon-cloud { color: #d1d5db; }
+  .icon-wind, .icon-compass {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.25rem;
+  }
+  
+  /* Forecast section */
+  .forecast-section {
+    margin-top: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .forecast-title {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+    padding-left: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .forecast-card {
+    backdrop-filter: blur(4px);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .forecast-day {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+  }
+  
+  .forecast-day-border {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .day-abbrev {
+    width: 3rem;
+    text-align: center;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+  }
+  
+  .day-icon {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  
+  .temp-range {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .temp-bar {
+    display: flex;
+    align-items: center;
+  }
+  
+  .temp-bar-day {
+    margin-bottom: 0.25rem;
+  }
+  
+  .temp-bar-track {
+    width: 6rem;
+    height: 0.25rem;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 9999px;
+    margin-right: 0.5rem;
+  }
+  
+  .temp-bar-fill {
+    height: 0.25rem;
+    background-color: white;
+    border-radius: 9999px;
+  }
+  
+  .temp-value {
+    width: 2rem;
+    text-align: right;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  
+  .temp-value-night {
+    opacity: 0.7;
+  }
+  
+  /* Additional info */
+  .additional-info {
+    margin-top: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    padding-bottom: 3rem;
+  }
+  
+  .info-card {
+    backdrop-filter: blur(4px);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 1.5rem;
+    padding: 1rem;
+  }
+  
+  .info-title {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .info-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .info-value {
+    margin-left: 0.5rem;
+  }
+  
+  .info-value-primary {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 500;
+  }
+  
+  .info-value-secondary {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    opacity: 0.7;
+  }
+  
+  /* Footer */
+  .footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #ffffff;
+    padding-bottom: 1rem;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
