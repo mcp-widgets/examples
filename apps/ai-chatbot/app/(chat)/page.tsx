@@ -14,12 +14,30 @@ export default async function Page({
   const id = `temp-${generateUUID()}`;
   
   // Get model from searchParams or cookie
-  const modelFromParams = searchParams.model as string;
+  const modelFromParams = (await searchParams).model as string;
   const cookieStore = await cookies();
   const modelIdFromCookie = cookieStore.get('chat-model');
   
   // Select model priority: searchParams > cookie > default
   const selectedModel = modelFromParams || modelIdFromCookie?.value || DEFAULT_CHAT_MODEL;
+
+
+  // We don't need this anymore because we're using a temporary chat
+  // if (!modelIdFromCookie) {
+  //   return (
+  //     <>
+  //       <Chat
+  //         key={id}
+  //         id={id}
+  //         initialMessages={[]}
+  //         selectedChatModel={DEFAULT_CHAT_MODEL}
+  //         selectedVisibilityType="private"
+  //         isReadonly={false}
+  //       />
+  //       <DataStreamHandler id={id} />
+  //     </>
+  //   );
+  // }
 
   return (
     <>
