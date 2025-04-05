@@ -225,14 +225,16 @@ server.tool(
       periods,
     });
 
-    const forecastText = `Forecast for ${latitude}, ${longitude}:\n\n${formattedForecast.join('\n')}`;
+    // Create a minimal text summary with just the essential information
+    const currentPeriod = periods[0] || {};
+    const minimalText = `Weather for ${latitude.toFixed(2)}, ${longitude.toFixed(2)}: ${currentPeriod.shortForecast || 'Unknown'}, ${currentPeriod.temperature || '?'}°${currentPeriod.temperatureUnit || 'F'}`;
 
     return {
       content: [
         {
           type: 'resource',
           resource: {
-            text: forecastText,
+            text: minimalText,
             uri: `data:text/html,${encodeURIComponent(
               createFullHTML({
                 latitude,

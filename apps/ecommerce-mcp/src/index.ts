@@ -21,7 +21,7 @@ const server = new McpServer({
 // Register tools
 server.tool(
   'get-product',
-  'Get detailed information about a specific product',
+  'Get detailed information about a specific product. Returns HTML rendering of the product card that should be displayed to the user.',
   {
     productId: z.string().describe('ID of the product to retrieve'),
   },
@@ -39,7 +39,7 @@ server.tool(
         {
           type: 'resource',
           resource: {
-            text: JSON.stringify(product, null, 2),
+            text: `${product.name} - ${product.price} ${product.currency}${!product.inStock ? ' (Out of stock)' : ''}`,
             uri: `data:text/html,${encodeURIComponent(html)}`,
             mimeType: 'text/html',
           },
@@ -51,7 +51,7 @@ server.tool(
 
 server.tool(
   'list-products',
-  'List products with optional filtering',
+  'List products with optional filtering. Returns HTML rendering of products that should be displayed to the user.',
   {
     category: z.string().optional().describe('Filter products by category'),
     minPrice: z
@@ -89,10 +89,39 @@ server.tool(
   }) => {
     let filteredProducts = [...products];
 
+    console.log(
+      `Available categories: ${[...new Set(products.map((p) => p.category))].join(', ')}`,
+    );
+
     if (category) {
-      filteredProducts = filteredProducts.filter(
-        (p) => p.category === category,
+      // Case-insensitive category matching with normalization
+      const normalizedCategory = category.toLowerCase().trim();
+      console.log(`Filtering by category: ${normalizedCategory}`);
+
+      // Handle special cases and aliases
+      const categoryMap: Record<string, string[]> = {
+        audio: ['audio'],
+        music: ['audio'],
+        sound: ['audio'],
+        electronics: ['electronics', 'audio'],
+        kitchen: ['home & kitchen'],
+        home: ['home & kitchen', 'home & office', 'home & garden'],
+        outdoors: ['sports & outdoors'],
+        sports: ['sports & outdoors'],
+        office: ['home & office'],
+      };
+
+      // Get the matching categories from the map or use the original
+      const categoriesToMatch = categoryMap[normalizedCategory] || [
+        normalizedCategory,
+      ];
+      console.log(`Categories to match: ${categoriesToMatch.join(', ')}`);
+
+      filteredProducts = filteredProducts.filter((p) =>
+        categoriesToMatch.some((cat) => p.category.toLowerCase().includes(cat)),
       );
+
+      console.log(`Found ${filteredProducts.length} matching products`);
     }
 
     if (typeof minPrice === 'number') {
@@ -117,14 +146,7 @@ server.tool(
         {
           type: 'resource',
           resource: {
-            text: JSON.stringify(
-              {
-                products: filteredProducts,
-                count: filteredProducts.length,
-              },
-              null,
-              2,
-            ),
+            text: `${title}: Found ${filteredProducts.length} products${category ? ` in category "${category}"` : ''}${typeof minPrice === 'number' || typeof maxPrice === 'number' ? ' matching your price range' : ''}`,
             uri: `data:text/html,${encodeURIComponent(html)}`,
             mimeType: 'text/html',
           },
@@ -136,7 +158,7 @@ server.tool(
 
 server.tool(
   'search-products',
-  'Search for products by query',
+  'Search for products by query. Returns HTML rendering of matching products that should be displayed to the user.',
   {
     query: z.string().describe('Search query for products'),
     limit: z
@@ -147,8 +169,16 @@ server.tool(
   async ({ query, limit = 10 }: { query: string; limit?: number }) => {
     const searchTerms = query.toLowerCase().split(' ');
 
-    // Search in name, description, and category
+    // Enhanced search with better matching
     const searchResults = products.filter((product) => {
+      // Check if any search term is in the keywords array
+      const keywordMatch = product.keywords
+        ? product.keywords.some((keyword) =>
+            searchTerms.some((term) => keyword.toLowerCase().includes(term)),
+          )
+        : false;
+
+      // Check direct matches in text fields
       const nameMatch = searchTerms.some((term) =>
         product.name.toLowerCase().includes(term),
       );
@@ -157,11 +187,20 @@ server.tool(
         product.description.toLowerCase().includes(term),
       );
 
-      const categoryMatch = searchTerms.some((term) =>
-        product.category.toLowerCase().includes(term),
-      );
+      // Enhanced category matching - check for both exact and partial matches
+      const categoryMatch = searchTerms.some((term) => {
+        const category = product.category.toLowerCase();
+        return (
+          category.includes(term) ||
+          // Map common search terms to categories
+          (term === 'audio' && category === 'electronics') ||
+          (term === 'sound' &&
+            (category === 'audio' || category === 'electronics')) ||
+          (term === 'music' && category === 'audio')
+        );
+      });
 
-      // Also search in attributes if available
+      // Attribute matching including attribute names
       const attributesMatch = product.attributes
         ? Object.entries(product.attributes).some(([key, value]) =>
             searchTerms.some(
@@ -172,7 +211,13 @@ server.tool(
           )
         : false;
 
-      return nameMatch || descriptionMatch || categoryMatch || attributesMatch;
+      return (
+        keywordMatch ||
+        nameMatch ||
+        descriptionMatch ||
+        categoryMatch ||
+        attributesMatch
+      );
     });
 
     // Apply limit
@@ -188,15 +233,7 @@ server.tool(
         {
           type: 'resource',
           resource: {
-            text: JSON.stringify(
-              {
-                products: limitedResults,
-                count: limitedResults.length,
-                query,
-              },
-              null,
-              2,
-            ),
+            text: `Found ${limitedResults.length} products matching "${query}"${limitedResults.length > 0 ? `. Categories include: ${[...new Set(limitedResults.map((p) => p.category))].join(', ')}` : ''}`,
             uri: `data:text/html,${encodeURIComponent(html)}`,
             mimeType: 'text/html',
           },
@@ -208,7 +245,7 @@ server.tool(
 
 server.tool(
   'get-recommendations',
-  'Get product recommendations based on a product or category',
+  'Get product recommendations based on a product or category. Returns HTML rendering of recommended products that should be displayed to the user.',
   {
     productId: z
       .string()
@@ -265,14 +302,7 @@ server.tool(
         {
           type: 'resource',
           resource: {
-            text: JSON.stringify(
-              {
-                products: recommendations,
-                count: recommendations.length,
-              },
-              null,
-              2,
-            ),
+            text: `${title}: ${recommendations.length} recommended products${productId ? ' based on your selected item' : category ? ` in the ${category} category` : ''}`,
             uri: `data:text/html,${encodeURIComponent(html)}`,
             mimeType: 'text/html',
           },

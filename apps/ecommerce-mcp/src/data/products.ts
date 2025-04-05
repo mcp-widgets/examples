@@ -10,6 +10,7 @@ export interface Product {
   reviewCount: number;
   inStock: boolean;
   attributes?: Record<string, string>;
+  keywords?: string[];
 }
 
 // Sample product data
@@ -23,7 +24,7 @@ export const products: Product[] = [
     currency: 'USD',
     imageUrl:
       'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop',
-    category: 'Electronics',
+    category: 'Audio',
     rating: 4.7,
     reviewCount: 1254,
     inStock: true,
@@ -35,6 +36,7 @@ export const products: Product[] = [
       soundQuality: 'Hi-Fi Audio',
       usageType: 'Music, Calls, Gaming',
     },
+    keywords: ['electronics', 'music', 'audio', 'headphones', 'wireless'],
   },
   {
     id: 'p2',
@@ -56,6 +58,7 @@ export const products: Product[] = [
       waterResistant: 'Yes',
       features: 'Music control, Fitness tracking',
     },
+    keywords: ['electronics', 'fitness', 'smartwatch', 'music control'],
   },
   {
     id: 'p3',
@@ -122,7 +125,7 @@ export const products: Product[] = [
     currency: 'USD',
     imageUrl:
       'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=400&fit=crop',
-    category: 'Electronics',
+    category: 'Audio',
     rating: 4.6,
     reviewCount: 428,
     inStock: true,
@@ -134,6 +137,14 @@ export const products: Product[] = [
       audioFeatures: 'Stereo, Bass boost, Music streaming',
       usage: 'Music, Podcasts, Outdoor',
     },
+    keywords: [
+      'electronics',
+      'audio',
+      'speaker',
+      'music',
+      'portable',
+      'bluetooth',
+    ],
   },
   {
     id: 'p7',
@@ -173,5 +184,34 @@ export const products: Product[] = [
       width: '28 inches',
       height: '36 inches',
     },
+  },
+  {
+    id: 'p9',
+    name: 'Vinyl Record Player',
+    description:
+      'Classic vinyl turntable with built-in speakers and Bluetooth connectivity. Experience warm analog sound with modern convenience.',
+    price: 149.99,
+    currency: 'USD',
+    imageUrl:
+      'https://images.unsplash.com/photo-1535992165812-68d1861aa71e?w=500&h=400&fit=crop',
+    category: 'Audio',
+    rating: 4.5,
+    reviewCount: 342,
+    inStock: true,
+    attributes: {
+      color: 'Walnut',
+      connectivity: 'Bluetooth, RCA',
+      speeds: '33, 45, 78 RPM',
+      speakers: 'Built-in',
+      features: 'Vinyl to MP3 recording',
+    },
+    keywords: [
+      'audio',
+      'vinyl',
+      'record player',
+      'turntable',
+      'music',
+      'retro',
+    ],
   },
 ];

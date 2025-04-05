@@ -299,8 +299,15 @@ function getCSS(): string {
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 2rem;
+      gap: 3rem;
       justify-items: center;
+      row-gap: 4rem;
+    }
+    
+    @media (max-width: 768px) {
+      .product-grid {
+        row-gap: 3rem;
+      }
     }
   `;
 }
