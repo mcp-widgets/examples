@@ -123,4 +123,4 @@ This architecture can be extended to support many types of interactive widgets b
 
 ### Acknowledgements
 
-This project is heavily relying on the work the anthopic team did with the Model Context Protocol and the Vercel's team of making AI tools accessible via their [AI SDK](https://sdk.vercel.ai/docs/introduction) and their example project [Vercel AI Chatbo](https://github.com/vercel/ai-chatbot).
+This project is heavily relying on the work the anthopic team did with the Model Context Protocol and the Vercel's team of making AI tools accessible via their [AI SDK](https://sdk.vercel.ai/docs/introduction) and their example project [Vercel AI Chatbot](https://github.com/vercel/ai-chatbot).
