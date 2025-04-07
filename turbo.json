@@ -1,6 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalEnv": ["OPENAI_API_KEY", "POSTGRES_URL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
